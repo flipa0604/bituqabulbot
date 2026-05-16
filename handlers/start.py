@@ -51,7 +51,7 @@ async def cmd_start(message: Message, state: FSMContext, db: Database) -> None:
 async def on_language_chosen(
     call: CallbackQuery, state: FSMContext, db: Database
 ) -> None:
-    """Til tanlangan — kirish xabari va Boshlash tugmasi."""
+    """Til tanlangan — welcome xabari saqlanadi, intro yangi xabar bilan keladi."""
     try:
         lang = call.data.split(":", 1)[1]
         if lang not in ("uz", "ru"):
@@ -59,7 +59,14 @@ async def on_language_chosen(
         await db.upsert_user(call.from_user.id, lang)
         await state.update_data(language=lang)
 
-        await call.message.edit_text(
+        # Welcome xabarini saqlab qolamiz, faqat til tugmalarini olib tashlaymiz.
+        try:
+            await call.message.edit_reply_markup(reply_markup=None)
+        except Exception:
+            pass
+
+        # Intro yangi xabar sifatida yuboriladi
+        await call.message.answer(
             locales.t(lang, "intro"),
             reply_markup=keyboards.start_keyboard(lang),
         )
@@ -71,7 +78,7 @@ async def on_language_chosen(
 
 @router.callback_query(F.data == "change_lang")
 async def on_change_lang(call: CallbackQuery, state: FSMContext) -> None:
-    """Tilni qaytadan tanlash."""
+    """Tilni qaytadan tanlash — intro xabari welcome bilan almashtiriladi."""
     await state.clear()
     await call.message.edit_text(
         locales.t("uz", "welcome"),

@@ -82,12 +82,22 @@ TEXTS: dict[str, dict[str, str]] = {
             "🎓 <b>Assalomu alaykum!</b>\n\n"
             "Buxoro Innovatsion Ta'lim va Tibbiyot Universiteti\n"
             "qabul botiga xush kelibsiz.\n\n"
+            "━━━━━━━━━━━━━━━━━━━\n\n"
+            "🎓 <b>Здравствуйте!</b>\n\n"
+            "Добро пожаловать в бот приёмной комиссии\n"
+            "Бухарского инновационного образовательно-\n"
+            "медицинского университета.\n\n"
             "Iltimos, tilni tanlang / Пожалуйста, выберите язык:"
         ),
         "ru": (
             "🎓 <b>Assalomu alaykum!</b>\n\n"
             "Buxoro Innovatsion Ta'lim va Tibbiyot Universiteti\n"
             "qabul botiga xush kelibsiz.\n\n"
+            "━━━━━━━━━━━━━━━━━━━\n\n"
+            "🎓 <b>Здравствуйте!</b>\n\n"
+            "Добро пожаловать в бот приёмной комиссии\n"
+            "Бухарского инновационного образовательно-\n"
+            "медицинского университета.\n\n"
             "Iltimos, tilni tanlang / Пожалуйста, выберите язык:"
         ),
     },
