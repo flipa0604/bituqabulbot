@@ -154,15 +154,19 @@ TEXTS: dict[str, dict[str, str]] = {
             "🎉 <b>Tabriklaymiz! Arizangiz qabul qilindi.</b>\n\n"
             "Tez orada qabul bo'limi xodimlari siz bilan\n"
             "bog'lanishadi. BITU oilasiga xush kelibsiz!\n\n"
-            "📞 Murojaat: {phone}\n"
-            "🌐 Sayt: {site}"
+            "📞 <b>Murojaat:</b> {phone}\n"
+            "🌐 <b>Sayt:</b> {site}\n"
+            "📸 <b>Instagram:</b> <a href=\"{instagram}\">@bitu_uz</a>\n"
+            "📣 <b>Telegram:</b> <a href=\"{telegram}\">@bitiinfo</a>"
         ),
         "ru": (
             "🎉 <b>Поздравляем! Ваша заявка принята.</b>\n\n"
             "Сотрудники приёмной комиссии скоро\n"
             "свяжутся с вами. Добро пожаловать в семью BITU!\n\n"
-            "📞 Контакт: {phone}\n"
-            "🌐 Сайт: {site}"
+            "📞 <b>Контакт:</b> {phone}\n"
+            "🌐 <b>Сайт:</b> {site}\n"
+            "📸 <b>Instagram:</b> <a href=\"{instagram}\">@bitu_uz</a>\n"
+            "📣 <b>Telegram:</b> <a href=\"{telegram}\">@bitiinfo</a>"
         ),
     },
     "already_applied": {

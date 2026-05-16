@@ -9,7 +9,7 @@ from datetime import datetime
 from aiogram import Bot, F, Router
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
 
 import config
 import keyboards
@@ -284,14 +284,17 @@ async def on_confirm(
 
         app_id = await db.add_application(payload)
 
-        # Foydalanuvchiga yakuniy xabar
+        # Foydalanuvchiga yakuniy xabar — link preview o'chirilgan
         await call.message.edit_text(
             locales.t(
                 lang,
                 "finish",
                 phone=config.UNIVERSITY_PHONE,
                 site=config.UNIVERSITY_SITE,
-            )
+                instagram=config.UNIVERSITY_INSTAGRAM,
+                telegram=config.UNIVERSITY_TELEGRAM,
+            ),
+            link_preview_options=LinkPreviewOptions(is_disabled=True),
         )
 
         # Adminga xabar

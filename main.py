@@ -11,6 +11,11 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import (
+    BotCommand,
+    BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
+)
 
 import config
 from database import Database
@@ -20,9 +25,43 @@ from middlewares import RateLimitMiddleware
 logger = logging.getLogger(__name__)
 
 
+async def _set_bot_commands(bot: Bot) -> None:
+    """Chap tarafdagi 'Menu' tugmasi orqali ko'rinadigan buyruqlar ro'yxati.
+
+    Oddiy foydalanuvchilar — start/language/cancel.
+    Admin — qo'shimcha admin buyruqlari (faqat admin chatida ko'rinadi).
+    """
+    # Oddiy foydalanuvchilar uchun (barcha private chatlarda)
+    user_commands = [
+        BotCommand(command="start", description="🚀 Botni boshlash / Ariza yuborish"),
+        BotCommand(command="language", description="🌐 Tilni o'zgartirish"),
+        BotCommand(command="cancel", description="❌ Anketani bekor qilish"),
+    ]
+    await bot.set_my_commands(
+        user_commands, scope=BotCommandScopeAllPrivateChats()
+    )
+
+    # Admin uchun — barcha buyruqlar
+    admin_commands = user_commands + [
+        BotCommand(command="admin", description="👨‍💼 Admin panel"),
+        BotCommand(command="stats", description="📊 Statistika"),
+        BotCommand(command="list", description="📋 Oxirgi 10 ta ariza"),
+        BotCommand(command="export", description="📥 Excel'ga eksport"),
+    ]
+    try:
+        await bot.set_my_commands(
+            admin_commands, scope=BotCommandScopeChat(chat_id=config.ADMIN_ID)
+        )
+    except Exception as e:
+        # Agar admin botga hali /start yubormagan bo'lsa, bu xato beradi —
+        # bu kritik emas, admin keyinroq buyruqlar ro'yxatini ko'radi.
+        logger.warning("Admin buyruqlari o'rnatilmadi: %s", e)
+
+
 async def on_startup(bot: Bot, db: Database) -> None:
     """Bot ishga tushganda chaqiriladi."""
     await db.init()
+    await _set_bot_commands(bot)
     bot_info = await bot.get_me()
     logger.info("Bot ishga tushdi: @%s (id=%s)", bot_info.username, bot_info.id)
 

@@ -24,8 +24,10 @@ except ValueError:
 DATABASE_PATH = os.getenv("DATABASE_PATH", "bitu.db")
 
 # Universitet bog'lanish ma'lumotlari (yakuniy xabarda ko'rsatiladi)
-UNIVERSITY_PHONE = "+998 65 220 00 00"
+UNIVERSITY_PHONE = "+998 55 305 99 99"
 UNIVERSITY_SITE = "bitu.uz"
+UNIVERSITY_INSTAGRAM = "https://www.instagram.com/bitu_uz"
+UNIVERSITY_TELEGRAM = "https://t.me/bitiinfo"
 
 # Rate limiting — 1 daqiqada maksimal xabar soni
 RATE_LIMIT_MAX = 30
