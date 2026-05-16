@@ -71,24 +71,35 @@ def regions_keyboard() -> InlineKeyboardMarkup:
 
 # ----- Bosqichlar -----
 
-def levels_keyboard() -> InlineKeyboardMarkup:
-    """Bakalavr / Magistratura / Klinik ordinatura — 1 ustunda."""
+def levels_keyboard(lang: str = "uz") -> InlineKeyboardMarkup:
+    """Bakalavr / Magistratura / Klinik ordinatura — 1 ustunda.
+
+    Pastida 🔙 Orqaga — viloyatni qayta tanlash.
+    """
     builder = InlineKeyboardBuilder()
     for key, label in locales.LEVELS.items():
         builder.button(text=label, callback_data=f"level:{key}")
-    builder.adjust(1)
+    builder.button(text=locales.t(lang, "btn_back"), callback_data="back:region")
+    # bosqichlar — har biri alohida qator, oxirida orqaga
+    builder.adjust(*([1] * len(locales.LEVELS)), 1)
     return builder.as_markup()
 
 
 # ----- Yo'nalishlar -----
 
-def directions_keyboard(level_key: str) -> InlineKeyboardMarkup:
-    """Bosqichga mos yo'nalishlar — 2 ustunda, callback'da indeks."""
+def directions_keyboard(level_key: str, lang: str = "uz") -> InlineKeyboardMarkup:
+    """Bosqichga mos yo'nalishlar — 2 ustunda, callback'da indeks.
+
+    Pastida 🔙 Orqaga — bosqichni qayta tanlash.
+    """
     builder = InlineKeyboardBuilder()
     items = locales.directions_for(level_key)
     for i, name in enumerate(items):
         builder.button(text=name, callback_data=f"dir:{i}")
-    builder.adjust(2)
+    builder.button(text=locales.t(lang, "btn_back"), callback_data="back:level")
+    # yo'nalishlar 2 ustunda, oxirgi qatorda — orqaga (1 ta tugma)
+    rows = [2] * ((len(items) + 1) // 2)
+    builder.adjust(*rows, 1)
     return builder.as_markup()
 
 

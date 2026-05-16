@@ -108,6 +108,7 @@ TEXTS: dict[str, dict[str, str]] = {
     "btn_send_contact": {"uz": "📲 Raqamni yuborish", "ru": "📲 Отправить номер"},
     "btn_confirm": {"uz": "✅ Tasdiqlash", "ru": "✅ Подтвердить"},
     "btn_retry": {"uz": "🔄 Qaytadan to'ldirish", "ru": "🔄 Заполнить заново"},
+    "btn_back": {"uz": "⬅️ Orqaga", "ru": "⬅️ Назад"},
     "ask_full_name": {
         "uz": "👤 Iltimos, ism va familiyangizni kiriting:\n\nMasalan: <i>Aliyev Akbar</i>",
         "ru": "👤 Пожалуйста, введите имя и фамилию:\n\nНапример: <i>Алиев Акбар</i>",

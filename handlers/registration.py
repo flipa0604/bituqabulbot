@@ -154,7 +154,7 @@ async def on_region(
 
     await call.message.edit_text(
         locales.t(lang, "ask_level"),
-        reply_markup=keyboards.levels_keyboard(),
+        reply_markup=keyboards.levels_keyboard(lang),
     )
     await call.answer()
 
@@ -176,7 +176,7 @@ async def on_level(
 
     await call.message.edit_text(
         locales.t(lang, "ask_direction"),
-        reply_markup=keyboards.directions_keyboard(level_key),
+        reply_markup=keyboards.directions_keyboard(level_key, lang),
     )
     await call.answer()
 
@@ -213,6 +213,36 @@ async def on_direction(
     )
     await call.message.edit_text(
         summary, reply_markup=keyboards.confirm_keyboard(lang)
+    )
+    await call.answer()
+
+
+# ----- Orqaga qaytish -----
+
+@router.callback_query(StateFilter(Registration.level), F.data == "back:region")
+async def on_back_to_region(
+    call: CallbackQuery, state: FSMContext, db: Database
+) -> None:
+    """Bosqich ekranidan -> viloyat ekraniga qaytish."""
+    lang = await _lang(state, db, call.from_user.id)
+    await state.set_state(Registration.region)
+    await call.message.edit_text(
+        locales.t(lang, "ask_region"),
+        reply_markup=keyboards.regions_keyboard(),
+    )
+    await call.answer()
+
+
+@router.callback_query(StateFilter(Registration.direction), F.data == "back:level")
+async def on_back_to_level(
+    call: CallbackQuery, state: FSMContext, db: Database
+) -> None:
+    """Yo'nalish ekranidan -> bosqich ekraniga qaytish."""
+    lang = await _lang(state, db, call.from_user.id)
+    await state.set_state(Registration.level)
+    await call.message.edit_text(
+        locales.t(lang, "ask_level"),
+        reply_markup=keyboards.levels_keyboard(lang),
     )
     await call.answer()
 
