@@ -14,11 +14,36 @@ load_dotenv(BASE_DIR / ".env")
 # Bot tokeni — BotFather'dan olinadi
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 
-# Admin Telegram ID — yangi arizalar yuboriladigan foydalanuvchi
-try:
-    ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
-except ValueError:
-    ADMIN_ID = 0
+# Adminlar Telegram ID — yangi arizalar yuboriladigan foydalanuvchilar.
+# .env'da ikkita variant qo'llab-quvvatlanadi:
+#   ADMIN_IDS=6553203791,8670687158   (vergul bilan ajratilgan ro'yxat)
+#   ADMIN_ID=6553203791                (eski formatga moslik)
+def _parse_admin_ids() -> list[int]:
+    raw = os.getenv("ADMIN_IDS", "").strip()
+    ids: list[int] = []
+    if raw:
+        for part in raw.split(","):
+            part = part.strip()
+            if not part:
+                continue
+            try:
+                ids.append(int(part))
+            except ValueError:
+                continue
+    single = os.getenv("ADMIN_ID", "").strip()
+    if single:
+        try:
+            single_id = int(single)
+            if single_id and single_id not in ids:
+                ids.append(single_id)
+        except ValueError:
+            pass
+    return ids
+
+
+ADMIN_IDS: list[int] = _parse_admin_ids()
+# Birinchi admin — eski kod bilan moslik uchun (asosiy admin)
+ADMIN_ID: int = ADMIN_IDS[0] if ADMIN_IDS else 0
 
 # Ma'lumotlar bazasi yo'li
 DATABASE_PATH = os.getenv("DATABASE_PATH", "bitu.db")
@@ -40,9 +65,9 @@ def validate_config() -> None:
         raise RuntimeError(
             "BOT_TOKEN topilmadi! .env faylda BOT_TOKEN ni belgilang."
         )
-    if ADMIN_ID == 0:
+    if not ADMIN_IDS:
         raise RuntimeError(
-            "ADMIN_ID topilmadi yoki noto'g'ri! .env faylda ADMIN_ID ni belgilang."
+            "ADMIN_IDS (yoki ADMIN_ID) topilmadi! .env faylda belgilang."
         )
 
 

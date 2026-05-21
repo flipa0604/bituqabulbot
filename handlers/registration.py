@@ -308,28 +308,31 @@ async def on_confirm(
 
 
 async def _notify_admin(bot: Bot, app_id: int, payload: dict) -> None:
-    """Adminga yangi ariza haqida xabar yuborish."""
-    try:
-        username = payload.get("username")
-        admin_text = locales.ADMIN_TEXTS["new_application_admin"].format(
-            id=app_id,
-            full_name=payload["full_name"],
-            phone=payload["phone"],
-            region=payload["region"],
-            level=payload["level"],
-            direction=payload["direction"],
-            language="O'zbek" if payload["language"] == "uz" else "Русский",
-            telegram_id=payload["telegram_id"],
-            username=f"@{username}" if username else "—",
-            time=datetime.now().strftime("%d.%m.%Y %H:%M"),
-        )
-        await bot.send_message(
-            chat_id=config.ADMIN_ID,
-            text=admin_text,
-            reply_markup=keyboards.admin_application_keyboard(
-                app_id, payload["telegram_id"]
-            ),
-        )
-        logger.info("Admin xabardor qilindi: ariza #%s", app_id)
-    except Exception:
-        logger.exception("Adminga xabar yuborishda xato")
+    """Barcha adminlarga yangi ariza haqida xabar yuborish."""
+    username = payload.get("username")
+    admin_text = locales.ADMIN_TEXTS["new_application_admin"].format(
+        id=app_id,
+        full_name=payload["full_name"],
+        phone=payload["phone"],
+        region=payload["region"],
+        level=payload["level"],
+        direction=payload["direction"],
+        language="O'zbek" if payload["language"] == "uz" else "Русский",
+        telegram_id=payload["telegram_id"],
+        username=f"@{username}" if username else "—",
+        time=datetime.now().strftime("%d.%m.%Y %H:%M"),
+    )
+    keyboard = keyboards.admin_application_keyboard(
+        app_id, payload["telegram_id"]
+    )
+    # Har bir adminga alohida yuboramiz — biri xato bersa qolganlari yetib borsin
+    for admin_id in config.ADMIN_IDS:
+        try:
+            await bot.send_message(
+                chat_id=admin_id,
+                text=admin_text,
+                reply_markup=keyboard,
+            )
+            logger.info("Admin %s xabardor qilindi: ariza #%s", admin_id, app_id)
+        except Exception:
+            logger.exception("Admin %s ga xabar yuborishda xato", admin_id)

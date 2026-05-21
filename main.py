@@ -41,21 +41,24 @@ async def _set_bot_commands(bot: Bot) -> None:
         user_commands, scope=BotCommandScopeAllPrivateChats()
     )
 
-    # Admin uchun — barcha buyruqlar
+    # Admin uchun — barcha buyruqlar (har bir admin chatiga alohida o'rnatamiz)
     admin_commands = user_commands + [
         BotCommand(command="admin", description="👨‍💼 Admin panel"),
         BotCommand(command="stats", description="📊 Statistika"),
         BotCommand(command="list", description="📋 Oxirgi 10 ta ariza"),
         BotCommand(command="export", description="📥 Excel'ga eksport"),
     ]
-    try:
-        await bot.set_my_commands(
-            admin_commands, scope=BotCommandScopeChat(chat_id=config.ADMIN_ID)
-        )
-    except Exception as e:
-        # Agar admin botga hali /start yubormagan bo'lsa, bu xato beradi —
-        # bu kritik emas, admin keyinroq buyruqlar ro'yxatini ko'radi.
-        logger.warning("Admin buyruqlari o'rnatilmadi: %s", e)
+    for admin_id in config.ADMIN_IDS:
+        try:
+            await bot.set_my_commands(
+                admin_commands, scope=BotCommandScopeChat(chat_id=admin_id)
+            )
+        except Exception as e:
+            # Agar admin botga hali /start yubormagan bo'lsa, bu xato beradi —
+            # bu kritik emas, admin keyinroq buyruqlar ro'yxatini ko'radi.
+            logger.warning(
+                "Admin (%s) buyruqlari o'rnatilmadi: %s", admin_id, e
+            )
 
 
 async def on_startup(bot: Bot, db: Database) -> None:
